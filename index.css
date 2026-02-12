@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: light; }
+
+@layer base {
+  :root {
+    --border: 229 231 235;
+    --muted: 245 245 245;
+    --foreground: 17 24 39;
+    --background: 255 255 255;
+  }
+}
+
+@layer utilities {
+  .border-border { border-color: rgb(var(--border)); }
+  .bg-muted { background-color: rgb(var(--muted)); }
+  .bg-background { background-color: rgb(var(--background)); }
+  .text-foreground { color: rgb(var(--foreground)); }
+  .text-muted-foreground { color: rgba(var(--foreground), 0.65); }
+}
