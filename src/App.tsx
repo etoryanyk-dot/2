@@ -10,6 +10,7 @@ import type {
   XactCategory,
 } from "./types";
 import { loadData, makeJobNumber, nowIso, uid, saveData, ymd } from "./storage";
+import { downloadDailyDryingReport } from "./pdf";
 
 const STATUS: JobStatus[] = ["Lead", "Scheduled", "Active", "Drying", "Rebuild", "On Hold", "Closed"];
 const LOSS: LossType[] = ["Water", "Sewer", "Mould", "Fire", "Impact", "Other"];
@@ -362,9 +363,10 @@ function JobDetail({
         <OverviewTab job={job} onChange={onChange} />
       ) : tab === "Field" ? (
         <FieldTab job={job} onChange={onChange} />
-      ) : tab === "Docs" ? (
-        <DocsTab />
-      ) : (
+) : tab === "Docs" ? (
+  <DocsTab job={job} />
+) : (
+
         <EstimateTab job={job} onChange={onChange} />
       )}
 
@@ -641,15 +643,24 @@ function FieldTab({ job, onChange }: { job: Job; onChange: (next: Job) => void }
   );
 }
 
-function DocsTab() {
+function DocsTab({ job }: { job: Job }) {
   return (
     <div className="card" style={{ padding: 12 }}>
-      <div style={{ fontWeight: 900, marginBottom: 8 }}>Docs (Next)</div>
-      <div className="small">
+      <div style={{ fontWeight: 900, marginBottom: 8 }}>Docs</div>
+
+      <div className="row" style={{ justifyContent: "space-between", alignItems: "center" }}>
+        <div className="small">
+          Generate an insurance-ready daily report including moisture readings + equipment log + job header.
+        </div>
+        <button className="btn" onClick={() => downloadDailyDryingReport(job)}>
+          Export Daily Drying PDF
+        </button>
+      </div>
+
+      <div className="small" style={{ marginTop: 12 }}>
         Next we’ll add:
         <ul>
           <li>Work Authorization + digital signature</li>
-          <li>Daily Drying Report PDF (moisture + equipment + notes)</li>
           <li>Photo report + attachment uploads</li>
           <li>IAQ / clearance uploads</li>
         </ul>
@@ -657,6 +668,7 @@ function DocsTab() {
     </div>
   );
 }
+
 
 function EstimateTab({ job, onChange }: { job: Job; onChange: (next: Job) => void }) {
   function patchLines(lines: EstimateLine[]) {
